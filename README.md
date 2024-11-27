@@ -1,4 +1,4 @@
-# 🧠 DeepL-2
+# 🧠 DeepL-2 [ongoing]
 
 Report of the second *Artificial Neural Network and Deep Learning [2024/25]* Homework, by DeepL team.
 
