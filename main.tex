@@ -94,21 +94,14 @@
 
     \begin{figure}[H]
             \centering
-            \includegraphics[width=0.85\linewidth]{figures/mars1.png}
+            \includegraphics[width=\linewidth]{figures/mars1.png}
             \caption{Example pair of image and mask.}
             \label{fig:mars1}
     \end{figure}
 
     \noindent Figure~\ref{fig:palette} shows for each color of image on the right the specific class $c$ from the labels set $C$. We emphasize the importance of the background class, as in real-world images -including the case of Mars terrain - certain regions may not belong to any predefined class. Without a background class, the model could become \emph{confused}, resulting in misclassifications.
     
-    \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.35\linewidth]{figures/mars_palette.png}
-            \caption{Viridis colormap of the set $C$.}
-            \label{fig:palette}
-    \end{figure}
-    
-    \noindent We tackled the segmentation problem in a 3-phase approach.
+    We tackled the segmentation problem in a 3-phase approach.
 
     \subsection{Phase 1: Data Inspection}
 
@@ -118,13 +111,20 @@
     
     While fine-tuning the thresholds, we observed an interesting pattern: all alien images shared the same mask, regardless of variations in the background. Leveraging this observation, we refined our detection method by comparing the labels across images, enabling us to identify and remove a total of 110 alien images.
 
+    \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.35\linewidth]{figures/mars_palette.png}
+            \caption{Viridis colormap of the set $C$.}
+            \label{fig:palette}
+    \end{figure}
+
     \subsection{Phase 2: Class Imbalance and Loss function}
 
     Figure~\ref{fig:freq} presents the frequency of each class in the dataset, expressed as a percentage of the total number of labels, along with their corresponding category descriptions.
 
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/freq.png}
+    \includegraphics[width=\linewidth]{figures/freq.png}
     \caption{Class frequencies in the dataset, expressed as percentages.}
     \label{fig:freq}
     \end{figure}
@@ -145,7 +145,7 @@
     \frac{1}{C}\sum_{c\in C}\frac{\mathbb{I}(y=c)\wedge \mathbb{I}(\hat y=c)}{\mathbb{I}(y=c)\vee \mathbb{I}(\hat y=c)}
     \end{equation*}
 
-    given the set of classes, the ground truth, and the model predictions.
+    \noindent given the set of classes, the ground truth, and the model predictions.
 
     \subsection{Advice-based Model}
 
@@ -155,7 +155,7 @@
 
     \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/U.png}
+    \includegraphics[width=\linewidth]{figures/U.png}
     \caption{Overview of the UNet architecture.}
     \label{fig:U}
     \end{figure}
@@ -167,20 +167,19 @@
     \text{Combined Loss} = 0.4 \cdot \texttt{ce} + 0.3 \cdot \texttt{dc} + 0.2 \cdot \texttt{fc} + 0.1 \cdot \texttt{bd}
     \end{equation*}
 
-\noindent Finally, a dual UNet framework was implemented to integrate large-scale and fine-detail segmentation with scale-weighted losses. The bottleneck was further improved with \emph{parallel dilated convolutions}, \emph{squeeze-and-excitation mechanisms}, and \emph{global context modules} to maximize feature fusion. We implemented \emph{deep supervision} with weighted intermediate losses at various decoder levels to refine predictions and further improve gradient flow. 
+    \noindent Finally, a dual UNet framework was implemented to integrate large-scale and fine-detail segmentation with scale-weighted losses. The bottleneck was further improved with \emph{parallel dilated convolutions}, \emph{squeeze-and-excitation mechanisms}, and \emph{global context modules} to maximize feature fusion. We implemented \emph{deep supervision} with weighted intermediate losses at various decoder levels to refine predictions and further improve gradient flow. 
 
-\emph{Group normalization} replaced \emph{batch normalization} in the upsampling layers because it resulted in being less sensitive to batch size and capturing fine details, improving the overall segmentation performance. \emph{Skip connections} were enhanced through weighted fusion mechanisms with learnable parameters, such as gated mechanisms. 
+    \emph{Group normalization} replaced \emph{batch normalization} in the upsampling layers because it resulted in being less sensitive to batch size and capturing fine details, improving the overall segmentation performance. \emph{Skip connections} were enhanced through weighted fusion mechanisms with learnable parameters, such as gated mechanisms. 
 
-Multi-scale contextual awareness was achieved through \emph{dilated convolutions} and \emph{pyramid pooling}, with varying dilation rates to balance local detail and global context, and \emph{transformer blocks} were integrated into the architecture to capture long-range feature dependencies, while \emph{adaptive feature fusion} was enabled through trainable gates. A dynamic learning rate adjustment strategy was adopted using a \emph{warm-up phase} followed by a \emph{cosine annealing scheduler} to balance exploration and convergence during training. 
+    Multi-scale contextual awareness was achieved through \emph{dilated convolutions} and \emph{pyramid pooling}, with varying dilation rates to balance local detail and global context, and \emph{transformer blocks} were integrated into the architecture to capture long-range feature dependencies, while \emph{adaptive feature fusion} was enabled through trainable gates. A dynamic learning rate adjustment strategy was adopted using a \emph{warm-up phase} followed by a \emph{cosine annealing scheduler} to balance exploration and convergence during training. 
 
-We also developed post-processing network to analyze the background class, and channel attention mechanisms, including \empg{squeeze-and-excitation blocks} implementation and dynamic channel gating to amplify the most critical features.
+    We also developed post-processing network to analyze the background class, and channel attention mechanisms, including \emph{squeeze-and-excitation blocks} implementation and dynamic channel gating to amplify the most critical features.
 
     Unfortunately, the performance reported in Table~\ref{tab:iou} of this complex model were not satisfactory. Therefore, we decided to build a simpler model.
 
     \subsection{Less-is-more Model}
     
-    Here, we describe the "Less-is-more" model, which focuses on simplicity and effectiveness. In this approach, we exclusively implemented the most impactful advice from prior iterations and adjusted the loss function to better address class imbalances. The total loss is a weighted sum, with a greater emphasis on \texttt{fc} to reflect its higher relevance in training:  
-
+    Here, we describe the \emph{Less-is-more} model, which focuses on simplicity and effectiveness. In this approach, we exclusively implemented the most impactful advice from prior iterations and adjusted the loss function to better address class imbalances. The total loss is a weighted sum, with a greater emphasis on \texttt{fc} to reflect its higher relevance in training:  
     \begin{equation*}
     \text{Combined Loss} = 0.8 \cdot \texttt{fc} + 0.1 \cdot \texttt{dc} + 0.1 \cdot \texttt{ce}
     \end{equation*}
@@ -212,7 +211,7 @@ We also developed post-processing network to analyze the background class, and c
     \section{Discussion and Conclusion} % (fold)
     \label{sec:discussion}
 
-    The “Less-is-more” model outperformed the “Advice-based” model in both validation and test IoU metrics. This highlights the importance of avoiding excessive complexity and focusing on streamlined, efficient designs.
+    The \emph{Less-is-more} model outperformed the \emph{Advice-based} model in both validation and test IoU metrics. This highlights the importance of avoiding excessive complexity and focusing on streamlined, efficient designs.
 
     The simpler model demonstrated better generalization capabilities, as evidenced by its consistent improvement across both validation and test datasets.
     Moreover, ewer architectural modifications meant faster training times and reduced susceptibility to overfitting, particularly on limited data.
